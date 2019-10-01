@@ -7,65 +7,87 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
+/**
+ * Creado por Humberto Sebastian Valera Castro el 30.09.19.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    @Override
+
+    private EditText heightText;
+    private EditText weightText;
+    private EditText BmiResult;
+    private TextView BmiCategory;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myButtonListenerMethod();
+        btnCalcularIMC();
     }
 
-    public void myButtonListenerMethod(){
-        Button button = (Button) findViewById(R.id.BTN_Calculo);
-        button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                //Hace una instancia del objeto del EDT encargado de la altura
-                final EditText heightText = (EditText) findViewById(R.id.EDT_M);
-                //Obtiene el valor introducido por el usuario en una variable string
-                String heightStr = heightText.getText().toString();
-                //Transforma el texto a tipo double y lo guarda en una variable
-                double height = Double.parseDouble(heightStr);
-                //Haccec una instancia del objeto del EDT encargado del peso
-                final EditText weightText = (EditText) findViewById(R.id.EDT_Kg);
-                //Obtiene el vlor introducido por el usuario en una varible string
-                String weightStr = weightText.getText().toString();
-                //Transforma el texto a tipo double y lo guarda en una variable
-                double weight = Double.parseDouble(weightStr);
-                //Se obtiene el calculo de la formula general y el resultado
-                //se guarda en una variable
-                double BMI = (weight)/(height*height);
-                //Hace una instancia del objeto del EDT encargado de mostrar el resultado
-                final EditText BmiResult = (EditText) findViewById(R.id.EDT_BMI);
-                //Hace una conversión de double a string y lo coloca como texto en el control
-                BmiResult.setText(Double.toString(BMI));
-                //Se crea una variable de tipo string con el fin de almacenar el mensaje
-                //de la categoria a mostrar
-                String BMI_Cat;
-                //Se empiezan a hacer comparaciones dependiendo del valor de la variable "BMI"
-                //para mostrar el mensaje correcto
-                if (BMI < 15)
-                    BMI_Cat = "Very severely underweight";
-                else if (BMI < 16)
-                    BMI_Cat = "Severely underweight";
-                else if (BMI < 18.5)
-                    BMI_Cat = "Underweight";
-                else if (BMI < 25)
-                    BMI_Cat = "Normal";
-                else if (BMI < 30)
-                    BMI_Cat = "Overweight";
-                else if (BMI < 35)
-                    BMI_Cat = "Obese Class 1 - Moderately Obese";
-                else if (BMI < 40)
-                    BMI_Cat = "Obese Class 2 - Severely Obese";
-                else
-                    BMI_Cat = "Obese Class 3 - Very Severely Obese";
-                //Se hace instancia del static que se dedica a mostrar el mensaje
-                final TextView BMICategory = (TextView) findViewById(R.id.STC_Categoria);
-                BMICategory.setText(BMI_Cat);
-            }
-        });
+    /**
+     * Metodo dedicado a hacer instancia al boton dedicado a calcular la masa corporal
+     * y se relaciona con el metodo que detecta "clic" al picarle al boton
+     */
+    private void btnCalcularIMC(){
+        Button btnCalcularIMCResult = findViewById(R.id.BTN_Calculo);
+        btnCalcularIMCResult.setOnClickListener(new BtnCalcularIMCEscuchador());
+    }
+
+    /**
+     * Se implementa metodo dedicado a obtener y mostrar los resultados en la vista
+     */
+    class BtnCalcularIMCEscuchador implements View.OnClickListener{
+        @Override
+        public void onClick(View view) {
+            BmiCategory = findViewById(R.id.STC_Categoria);
+            BmiResult = findViewById(R.id.EDT_BMI);
+            weightText = findViewById(R.id.EDT_Kg);
+            heightText = findViewById(R.id.EDT_M);
+            String estaturaStr = heightText.getText().toString();
+            String pesoStr = weightText.getText().toString();
+            Double estaturaDbl = Double.parseDouble(estaturaStr);
+            Double pesoDbl = Double.parseDouble(pesoStr);
+            Double imc = calcularIMC(pesoDbl,estaturaDbl);
+            BmiResult.setText(Double.toString(imc));
+            BmiCategory.setText(getBMICategoria(imc));
+        }
+    }
+
+    /**
+     * Metodo que calcula el Indice de Masa Corporal
+     * @param pesoDbl Peso de la persona
+     * @param estaturaDbl Estatura de la persona
+     * @return Indice de masa corporal en formato double
+     */
+    private Double calcularIMC(Double pesoDbl, Double estaturaDbl){
+        Double imc = pesoDbl / (estaturaDbl * estaturaDbl);
+        return imc;
+    }
+
+    /**
+     * Metodo que calcula la categoria a partir del IMC
+     * @param imc Indice de Masa Corporal en formato Double
+     * @return categoria calculada en formato de cadena de Texto (string)
+     */
+    private String getBMICategoria(Double imc){
+    IMC categoria;
+    if (imc < 15) {
+        categoria = IMC.VERY_SEVERELY_UNDER_WEIGHT;
+    }else if (imc < 16){
+        categoria = IMC.SEVERELY_UNDER_WEIGHT;
+    }else if (imc < 18.5){
+        categoria = IMC.UNDER_WEIGHT;
+    }else if (imc < 20){
+        categoria = IMC.NORMAL;
+    }else if (imc < 30){
+        categoria = IMC.OVER_WEIGHT;
+    }else if (imc < 35){
+        categoria = IMC.MODERATELY_OBESE;
+    }else if (imc < 40){
+        categoria = IMC.SEVERELY_OBESE;
+    }else {
+        categoria = IMC.VERY_SEVERELY_OBESE;
+    }
+    return IMCEnum.getValue(categoria);
     }
 }
