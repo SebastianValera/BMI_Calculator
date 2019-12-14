@@ -2,6 +2,7 @@ package com.example.bmicalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,9 +20,6 @@ public class MainActivity extends AppCompatActivity {
     private Spinner edad;
     private EditText weightText;
     private EditText heightText;
-    private EditText BmiResult;
-    private TextView BmiCategory;
-    private TextView EstaturaCategory;
     String[] ComboSexo = {"Hombre", "Mujer"};
     String[] ComboEdad = {"Al nacer", "1 mes", "2 meses", "3 meses", "4 meses",
             "5 meses", "6 meses", "7 meses", "8 meses", "9 meses",
@@ -34,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
             "15 años", "16 años", "17 años", "18 años", "19 años",
             "20 años o mas"};
 
+
+    /**
+     * Constructor de la clase
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -49,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
         edad = findViewById(R.id.COMBO_Edad);
         weightText = findViewById(R.id.EDT_Kg);
         heightText = findViewById(R.id.EDT_M);
-        BmiResult = findViewById(R.id.EDT_BMI);
-        BmiCategory = findViewById(R.id.STC_Categoria);
         Button btnCalcularIMCResult = findViewById(R.id.BTN_Calculo);
         ArrayAdapter llenadoSexo = new ArrayAdapter(this, android.R.layout.simple_spinner_item, ComboSexo);
         llenadoSexo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     class BtnCalcularIMCEscuchador implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-
+            Intent intentResultado = new Intent(MainActivity.this,Resultado.class);
             int sexoPosicion = sexo.getSelectedItemPosition();
             int edadPosicion = edad.getSelectedItemPosition();
             String estaturaStr = heightText.getText().toString();
@@ -82,8 +83,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 imc = calcularIMC(pesoDbl, estaturaDbl);
             }
-            BmiResult.setText(Double.toString(imc));
-            BmiCategory.setText(getBMICategoria(imc, sexoPosicion, edadPosicion));
+            intentResultado.putExtra("imc",Double.toString(imc));
+            intentResultado.putExtra("categoria",getBMICategoria(imc, sexoPosicion, edadPosicion));
+            startActivity(intentResultado);
+            //BmiResult.setText(Double.toString(imc));
+            //BmiCategory.setText(getBMICategoria(imc, sexoPosicion, edadPosicion));
         }
     }
 
