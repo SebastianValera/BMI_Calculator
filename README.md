@@ -13,6 +13,9 @@ En la segunda pantalla, muestra los resultados obtenidos de acuerdo a los parame
 
 ![](https://raw.githubusercontent.com/SebastianValera/BMI_Calculator/master/AplicacionResultados.png)
 
+### Video de prueba
+En el proyecto se encuentra un video de prueba de ejecución llamado "Proyecto_BMI_Android.mp4".
+
 ## Planes a Futuro
 Por el momento no se tiene definido algún cambio a futuro.
 
